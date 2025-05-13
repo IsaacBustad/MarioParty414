@@ -4,22 +4,49 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameMannager_Singleton : MonoBehaviour
 {
     // Vars
+    public delegate void OnGameNodeChangeDel(GameModeNode aGMN);
+    public OnGameNodeChangeDel onGameNodeChangeDel;
+
     // instance of the singal object to refference
-    private GameMannager_Singleton instance = null;
+    private static GameMannager_Singleton instance = null;
+
+    private List<SinglePlayerInputCollector> piCollectors = new List<SinglePlayerInputCollector>();
 
 
 
 
     // Methods
-    //public
+    private void OnEnable()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            if (instance != this)
+            {
+                Destroy(gameObject);
+            }
+            
+        }
+    }
+
+    // added for on OnPlayerJoin PlayerInputManagement CallBack
+    public void OnPlayerJoin(PlayerInput aPI)
+    {
+        piCollectors.Add(aPI.GetComponent<SinglePlayerInputCollector>());
+    }
 
 
     // Accessors
-    public GameMannager_Singleton Instance 
+    public static GameMannager_Singleton Instance 
     { 
         get 
         { 
