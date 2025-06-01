@@ -59,7 +59,20 @@ MonoBehaviour:
       m_Calls: []
   m_ActionEvents:
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3210703154667155655}
+        m_TargetAssemblyTypeName: BugFreeProductions.Party.SinglePlayerInputCollector,
+          Assembly-CSharp
+        m_MethodName: FourWayInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 5e60404b-7536-49ca-8799-d3591a1fde36
     m_ActionName: MasterPlayerInput/WSAD
   - m_PersistentCalls:

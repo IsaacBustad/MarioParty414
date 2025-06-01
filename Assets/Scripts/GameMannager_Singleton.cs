@@ -6,64 +6,81 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameMannager_Singleton : MonoBehaviour
+
+namespace BugFreeProductions.Party
+
 {
-    // Vars
-    public delegate void OnGameNodeChangeDel(GameModeNode aGMN);
-    public OnGameNodeChangeDel onGameNodeChangeDel;
-
-    // instance of the singal object to refference
-    private static GameMannager_Singleton instance = null;
-
-    private List<SinglePlayerInputCollector> piCollectors = new List<SinglePlayerInputCollector>();
-
-
-
-
-    // Methods
-    private void OnEnable()
+    public class GameMannager_Singleton : MonoBehaviour
     {
-        if (instance == null)
+        // Vars
+        // Delegates
+        /*public delegate void OnGameNodeChangeDel(GameModeNode aGMN);
+        public OnGameNodeChangeDel onGameNodeChangeDel;*/
+        protected GameModeNode gameModeNode = null;
+
+
+        // instance of the singal object to refference
+        private static GameMannager_Singleton instance = null;
+
+        private List<SinglePlayerInputCollector> piCollectors = new List<SinglePlayerInputCollector>();
+
+
+
+
+        // Methods
+        private void OnEnable()
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            if (instance != this)
+            if (instance == null)
             {
+                instance = this;
+                GetComponent<PlayerInputManager>().onPlayerJoined += OnPlayerJoin;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                /*if (instance != this)
+                {
+                    Destroy(gameObject);
+                }*/
                 Destroy(gameObject);
             }
-            
         }
-    }
 
-    // added for on OnPlayerJoin PlayerInputManagement CallBack
-    public void OnPlayerJoin(PlayerInput aPI)
-    {
-        piCollectors.Add(aPI.GetComponent<SinglePlayerInputCollector>());
-    }
+        // added for on OnPlayerJoin PlayerInputManagement CallBack
+        public void OnPlayerJoin(PlayerInput aPI)
+        {
+            piCollectors.Add(aPI.GetComponent<SinglePlayerInputCollector>());
 
-
-    // Accessors
-    public static GameMannager_Singleton Instance 
-    { 
-        get 
-        { 
-            if (instance == null) 
+            // Refresh the game mode node info if exist
+            if (gameModeNode != null)
             {
-                // create new empty object
-                GameObject nGO = new GameObject();
+                gameModeNode.RefreshGameModeInfo();
+            }
+        }
 
-                // prevent object from being destroyed on new scene load
-                DontDestroyOnLoad(nGO);
 
-                // create the instance to be later refferenced
-                instance = nGO.gameObject.AddComponent<GameMannager_Singleton>();
-            } 
-            return instance; 
-        } 
+        // Accessors
+        public static GameMannager_Singleton Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    // create new empty object
+                    GameObject nGO = new GameObject();
+
+                    // prevent object from being destroyed on new scene load
+                    DontDestroyOnLoad(nGO);
+
+                    // create the instance to be later refferenced
+                    instance = nGO.gameObject.AddComponent<GameMannager_Singleton>();
+                }
+                return instance;
+            }
+        }
+
+        public List<SinglePlayerInputCollector> PICollectors { get { return piCollectors; } }
+        public GameModeNode GameModeNode { get { return gameModeNode; } set { gameModeNode = value; } }
+
     }
-
-
 }
