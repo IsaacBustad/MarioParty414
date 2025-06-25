@@ -16,11 +16,7 @@ public class TestableGamePlayerNode : GamePlayerNode
 
     // Methods
     // expext callback V2
-    public override void FourWayInput(InputAction.CallbackContext aCON)
-    {
-        gameObject.GetComponent<Rigidbody>().AddForce(aCON.ReadValue<Vector2>()*50);
-
-    }
+    
 
 
     // Accessors

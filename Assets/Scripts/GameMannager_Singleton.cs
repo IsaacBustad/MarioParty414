@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Linq;
 
 
 namespace BugFreeProductions.Party
@@ -23,6 +24,10 @@ namespace BugFreeProductions.Party
         private static GameMannager_Singleton instance = null;
 
         private List<SinglePlayerInputCollector> piCollectors = new List<SinglePlayerInputCollector>();
+
+        // store current Player Ranks
+        protected Dictionary<SinglePlayerInputCollector, int> playerRanks =
+                                new System.Collections.Generic.Dictionary<SinglePlayerInputCollector,int>();
 
 
 
@@ -44,18 +49,58 @@ namespace BugFreeProductions.Party
                 }*/
                 Destroy(gameObject);
             }
+            // debug some info for status checks
+            Report();
         }
+
+        // Debug a report on current class status
+        protected virtual void Report()
+        {
+            foreach (KeyValuePair<SinglePlayerInputCollector,int> kvp in playerRanks)
+            {
+                Debug.Log(kvp.Key + " " + kvp.Value);
+            }
+            Debug.Log("" + playerRanks);
+        }
+
+
+        // initialize new dictionary for ranks
+        protected virtual void InitPlayerRanks()
+        {
+            // clear any residual player info
+            playerRanks.Clear();
+
+            // create new dictionary info
+            foreach (SinglePlayerInputCollector spc in piCollectors)
+            {
+                playerRanks.Add(spc,0);
+            }
+
+        }
+
+        // update the Player Ranks
+        public virtual void UpdatePlayerRanks(Dictionary<SinglePlayerInputCollector,int> aPlayerRanks )
+        {
+            foreach (KeyValuePair<SinglePlayerInputCollector,int>  pr in aPlayerRanks)
+            {
+                playerRanks[pr.Key] += pr.Value;
+            }
+            
+        }
+
 
         // added for on OnPlayerJoin PlayerInputManagement CallBack
         public void OnPlayerJoin(PlayerInput aPI)
         {
             piCollectors.Add(aPI.GetComponent<SinglePlayerInputCollector>());
+            InitPlayerRanks();
 
             // Refresh the game mode node info if exist
             if (gameModeNode != null)
             {
                 gameModeNode.RefreshGameModeInfo();
             }
+            Report() ;
         }
 
 
@@ -79,8 +124,11 @@ namespace BugFreeProductions.Party
             }
         }
 
+        // Accessors
         public List<SinglePlayerInputCollector> PICollectors { get { return piCollectors; } }
         public GameModeNode GameModeNode { get { return gameModeNode; } set { gameModeNode = value; } }
+
+        public Dictionary<SinglePlayerInputCollector,int> PlayerRanks { get { return playerRanks; } }
 
     }
 }

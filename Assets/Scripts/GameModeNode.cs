@@ -17,11 +17,40 @@ namespace BugFreeProductions.Party
 
         protected CameraViewportManager cameraViewportManager = new CameraViewportManager();
 
+        // store player node ranking
+        protected Dictionary<SinglePlayerInputCollector,int> playerRanks = new Dictionary<SinglePlayerInputCollector, int>();
+
         // Methods
         protected virtual void OnEnable()
         {
             RefreshGameModeInfo();
         }
+
+        #region Player Rank Management
+        // read initial rank for the player 
+        // based on Single Player Input
+        protected virtual void ReadInitRank()
+        {
+            playerRanks = GameMannager_Singleton.Instance.PlayerRanks;
+        }
+
+        // update local player ranks on node
+        protected virtual void UpdatePlayerRank(SinglePlayerInputCollector aSPIC, int aRank)
+        {
+            playerRanks[aSPIC] += aRank;
+        }
+
+        // update player rank in mannager
+        // assumes upatting of all players in game 
+        protected virtual void UpdateMannagerRanks()
+        {
+            GameMannager_Singleton.Instance.UpdatePlayerRanks(playerRanks);
+        }
+        #endregion
+
+        #region Player and Camera management
+
+        
         public virtual void RefreshGameModeInfo()
         {
             // refresh Camera Viewport info
@@ -67,6 +96,9 @@ namespace BugFreeProductions.Party
             cameraViewportManager = new CameraViewportManager();
 
         }
+        #endregion
+
+
 
         // Accessors
 
