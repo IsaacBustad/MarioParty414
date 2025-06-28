@@ -14,14 +14,14 @@ namespace BugFreeProductions.Party
     {
 
         // Vars
-        protected GameModeNode gameModeNode = null;
+        //protected GameModeNode gameModeNode = null;
         [SerializeField] protected GamePlayerNode playerNode = null;
 
 
         // Methods
         public virtual void OnGameModeNodeChange(GameModeNode aGMN)
         {
-            gameModeNode = aGMN;
+            //gameModeNode = aGMN;
         }
 
 
@@ -37,7 +37,7 @@ namespace BugFreeProductions.Party
         {
             //pib
             //GameMannager_Singleton.Instance.onGameNodeChangeDel += OnGameModeNodeChange;
-            transform.parent = GameMannager_Singleton.Instance.gameObject.transform;
+            transform.parent = GameMannager_Singleton.Instance.transform;
         }
 
         #region Input Management
@@ -62,9 +62,10 @@ namespace BugFreeProductions.Party
         }
 
         // expext callback context
+        // WSAD and left stick
         public virtual void FourWayInput(InputAction.CallbackContext aCON)
         {
-            Debug.Log(aCON.ReadValue<Vector2>());
+            //Debug.Log(aCON.ReadValue<Vector2>());
             if (playerNode != null)
             {
                 playerNode.FourWayInput(aCON);
@@ -106,7 +107,7 @@ namespace BugFreeProductions.Party
         #region Destroy Logic
         #endregion
         // Accessors
-        public GamePlayerNode PlayerNode { get { return playerNode; } set { Debug.Log(value.name); playerNode = value; } }
+        public GamePlayerNode PlayerNode { get { return playerNode; } set { playerNode = value; } }
 
 
     }

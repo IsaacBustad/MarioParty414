@@ -21,7 +21,7 @@ namespace BugFreeProductions.Party
 
         // player context references
         protected Rigidbody rb = null;
-        protected PlayerMoveContext pmc = null;
+        //protected PlayerMoveContext pmc = null;
 
         // Methods
         protected virtual void OnEnable()
