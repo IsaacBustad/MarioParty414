@@ -13,17 +13,28 @@ namespace BugFreeProductions.Party
     public class GameModeNode : MonoBehaviour
     {
         // Vars
+        // game player nodes
         [SerializeField] protected List<GamePlayerNode> playerNodes = null;
 
         protected CameraViewportManager cameraViewportManager = new CameraViewportManager();
 
-        // store player node ranking
+        // store SinglePlayerInputCollector node ranking
         protected Dictionary<SinglePlayerInputCollector,int> playerRanks = new Dictionary<SinglePlayerInputCollector, int>();
 
         // Methods
         protected virtual void OnEnable()
         {
+            // refresh the game mode input and camera info
             RefreshGameModeInfo();
+
+            // set defaults for variables
+            SetDefaults();
+        }
+
+        // Set Defaults
+        protected virtual void SetDefaults()
+        {
+
         }
 
         #region Player Rank Management
@@ -77,8 +88,11 @@ namespace BugFreeProductions.Party
             // assign player node refference to input collectors
             for (int i = 0; i < spics.Count; i++)
             {
-                // assign all input collectors an input node
+                // assign all input collectors a player node
                 spics[i].PlayerNode = playerNodes[i];
+
+                // assign all player nodes a input collector
+                playerNodes[i].SinglePlayerInputCollector = spics[i];
 
                 // look for player node camera
                 Camera camera = playerNodes[i].NodeCamera;

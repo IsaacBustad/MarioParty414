@@ -16,12 +16,15 @@ namespace BugFreeProductions.Party
         // Vars
         [SerializeField] protected Camera nodeCamera = null;
 
-        // stored input
+        // stored input value
         protected Vector3 moveDir = Vector3.zero;
 
         // player context references
         protected Rigidbody rb = null;
         //protected PlayerMoveContext pmc = null;
+
+        // store input collector
+        protected SinglePlayerInputCollector singlePlayerInputCollector = null;
 
         // Methods
         protected virtual void OnEnable()
@@ -95,5 +98,7 @@ namespace BugFreeProductions.Party
         // Accessors
         public Camera NodeCamera { get { return nodeCamera; } }
         public Vector3 MovDir { get { return moveDir; } }
+
+        public SinglePlayerInputCollector SinglePlayerInputCollector { get { return singlePlayerInputCollector; } set { singlePlayerInputCollector = value; } }
     }
 }
