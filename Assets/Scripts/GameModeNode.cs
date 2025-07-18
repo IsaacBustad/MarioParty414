@@ -5,6 +5,7 @@
 using BugFreeProductions.Tools;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -16,19 +17,25 @@ namespace BugFreeProductions.Party
         // game player nodes
         [SerializeField] protected List<GamePlayerNode> playerNodes = null;
 
+        // camera viewport management system
         protected CameraViewportManager cameraViewportManager = new CameraViewportManager();
 
         // store SinglePlayerInputCollector node ranking
         protected Dictionary<SinglePlayerInputCollector,int> playerRanks = new Dictionary<SinglePlayerInputCollector, int>();
 
+        // has the game mode been initalized
+        protected bool gameModeInit = false;
+
         // Methods
         protected virtual void OnEnable()
         {
-            // refresh the game mode input and camera info
-            RefreshGameModeInfo();
-
-            // set defaults for variables
-            SetDefaults();
+            GameMannager_Singleton gms = GameMannager_Singleton.Instance;
+            if (gms != null)
+            {
+                gms.GameModeNode = this;
+                gms.RefreshGameModeNode();
+            }
+                        
         }
 
         // Set Defaults
@@ -51,6 +58,14 @@ namespace BugFreeProductions.Party
             playerRanks[aSPIC] += aRank;
         }
 
+        // rank players
+        // to be overwritten by child classes
+        protected virtual void RankPlayers()
+        {
+            
+            
+        }
+
         // update player rank in mannager
         // assumes upatting of all players in game 
         protected virtual void UpdateMannagerRanks()
@@ -64,13 +79,24 @@ namespace BugFreeProductions.Party
         
         public virtual void RefreshGameModeInfo()
         {
+            
+
             // refresh Camera Viewport info
             RefreshCameraViewportRefference();
 
             // refresh Inputs 
             RefreshInputRefference();
 
-            
+            // initialized if not initialized
+            InitGameMode();
+
+
+        }
+
+        // initialize the game mode
+        protected virtual void InitGameMode()
+        {
+                gameModeInit = true;            
         }
 
         // method to refresh input assignments
@@ -86,28 +112,41 @@ namespace BugFreeProductions.Party
 
 
             // assign player node refference to input collectors
-            for (int i = 0; i < spics.Count; i++)
+            if (spics.Count > 0 && playerNodes.Count >= spics.Count)
             {
-                // assign all input collectors a player node
-                spics[i].PlayerNode = playerNodes[i];
-
-                // assign all player nodes a input collector
-                playerNodes[i].SinglePlayerInputCollector = spics[i];
-
-                // look for player node camera
-                Camera camera = playerNodes[i].NodeCamera;
-                // add player cameras if there are any
-                if ( camera != null)
+                for (int i = 0; i < spics.Count; i++)
                 {
-                    cameraViewportManager.ChangeCamViewport(camera,true);
-                }
+                    // assign all input collectors a player node
+                    spics[i].PlayerNode = playerNodes[i];
 
+                    // assign all player nodes a input collector
+                    playerNodes[i].SinglePlayerInputCollector = spics[i];
+
+                    // look for player node camera
+                    Camera camera = playerNodes[i].NodeCamera;
+                    // add player cameras if there are any
+                    if (camera != null)
+                    {
+                        cameraViewportManager.ChangeCamViewport(camera, true);
+                    }
+
+                }
             }
+            else if(playerNodes.Count < spics.Count)
+            {
+                Debug.LogError("Not enough Player Nodes are not added to Player Nodes Array on: " + this.name);
+            }
+            
         }
 
         protected virtual void RefreshCameraViewportRefference()
         {
             cameraViewportManager = new CameraViewportManager();
+
+        }
+
+        protected virtual void EndGame()
+        {
 
         }
         #endregion

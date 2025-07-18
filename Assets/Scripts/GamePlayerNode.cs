@@ -5,7 +5,6 @@
 
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,10 +20,12 @@ namespace BugFreeProductions.Party
 
         // player context references
         protected Rigidbody rb = null;
-        //protected PlayerMoveContext pmc = null;
-
+        
         // store input collector
         protected SinglePlayerInputCollector singlePlayerInputCollector = null;
+
+        // store game mode node
+        protected GameModeNode gameModeNode = null;
 
         // Methods
         protected virtual void OnEnable()
@@ -100,5 +101,17 @@ namespace BugFreeProductions.Party
         public Vector3 MovDir { get { return moveDir; } }
 
         public SinglePlayerInputCollector SinglePlayerInputCollector { get { return singlePlayerInputCollector; } set { singlePlayerInputCollector = value; } }
+        
+        public GameModeNode GameModeNode 
+        { 
+            get 
+            { 
+                if (gameModeNode == null) 
+                { 
+                    gameModeNode = GetComponentInParent<GameModeNode>(); 
+                } 
+                return gameModeNode; 
+            } 
+        }
     }
 }

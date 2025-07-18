@@ -38,15 +38,12 @@ namespace BugFreeProductions.Party
             if (instance == null)
             {
                 instance = this;
-                GetComponent<PlayerInputManager>().onPlayerJoined += OnPlayerJoin;
+                GetComponent<PlayerInputManager>().playerJoinedEvent.AddListener(OnPlayerJoin);
+                //GetComponent<PlayerInputManager>().playerLeftEvent.RemoveListener(OnPlayerJoin);
                 DontDestroyOnLoad(gameObject);
             }
             else
             {
-                /*if (instance != this)
-                {
-                    Destroy(gameObject);
-                }*/
                 Destroy(gameObject);
             }
             // debug some info for status checks
@@ -84,6 +81,7 @@ namespace BugFreeProductions.Party
             foreach (KeyValuePair<SinglePlayerInputCollector,int>  pr in aPlayerRanks)
             {
                 playerRanks[pr.Key] += pr.Value;
+                Debug.Log("New Manager Value = " + playerRanks[pr.Key]);
             }
             
         }
@@ -96,11 +94,18 @@ namespace BugFreeProductions.Party
             InitPlayerRanks();
 
             // Refresh the game mode node info if exist
-            if (gameModeNode != null)
+            RefreshGameModeNode();
+        }
+
+        // refresh the game mode node
+        public virtual void RefreshGameModeNode()
+        {
+            // Refresh the game mode node info if exist
+            if (gameModeNode == null)
             {
-                gameModeNode.RefreshGameModeInfo();
+                gameModeNode = FindObjectOfType<GameModeNode>();
             }
-            Report() ;
+            gameModeNode.RefreshGameModeInfo();
         }
 
 
@@ -109,7 +114,7 @@ namespace BugFreeProductions.Party
         {
             get
             {
-                if (instance == null)
+                /*if (instance == null)
                 {
                     // create new empty object
                     GameObject nGO = new GameObject();
@@ -119,7 +124,7 @@ namespace BugFreeProductions.Party
 
                     // create the instance to be later refferenced
                     instance = nGO.gameObject.AddComponent<GameMannager_Singleton>();
-                }
+                }*/
                 return instance;
             }
         }
